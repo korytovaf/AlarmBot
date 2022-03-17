@@ -1,0 +1,20 @@
+{
+  "name": "alarmbot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "kaf1@mail.ru",
+  "license": "MIT",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "config": "^3.3.7",
+    "dotenv": "^16.0.0",
+    "mongoose": "^6.2.7",
+    "telegraf": "^4.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  }
+}
