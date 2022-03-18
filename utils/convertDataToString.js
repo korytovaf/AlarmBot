@@ -4,10 +4,10 @@ const convertDataToString = (expiryTime) => {
   const today = new Date();
   const date = convertDataTime(expiryTime);
   const { data } = convertDataTime(today);
-  const day = `${expiryTime.getDate() + 1 <= 9 ? "0" : ""}${expiryTime.getDate()}`;
-  const tomorrow = `${expiryTime.getDate() + 1 <= 9 ? "0" : ""}${expiryTime.getDate() - 1}`;
-  const month = `${expiryTime.getMonth() + 1 <= 9 ? "0" : ""}${expiryTime.getMonth() + 1}`;
-  const year = expiryTime.getFullYear();
+  const day = `${expiryTime.getUTCDate() + 1 <= 9 ? "0" : ""}${expiryTime.getUTCDate()}`;
+  const tomorrow = `${expiryTime.getUTCDate() + 1 <= 9 ? "0" : ""}${expiryTime.getUTCDate() - 1}`;
+  const month = `${expiryTime.getUTCMonth() + 1 <= 9 ? "0" : ""}${expiryTime.getUTCMonth() + 1}`;
+  const year = expiryTime.getUTCFullYear();
 
   let dateString = date.data;
 
