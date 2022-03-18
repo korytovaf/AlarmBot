@@ -4,12 +4,12 @@ const setData = (time, date) => {
 
   if (date === 'Сегодня') {
     const currentDate = new Date();
-    date = `${currentDate.getUTCDate()}.${currentDate.getUTCMonth() + 1}.${currentDate.getUTCFullYear()}`
+    date = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`
   }
 
   if (date === 'Завтра') {
     const currentDate = new Date();
-    date = `${currentDate.getUTCDate() + 1}.${currentDate.getUTCMonth() + 1}.${currentDate.getUTCFullYear()}`
+    date = `${currentDate.getDate() + 1}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`
   }
   [day, month, year] = date.split('.');
   const receivedDate = new Date(+year, +month - 1, +day, +hour, +minutes);
