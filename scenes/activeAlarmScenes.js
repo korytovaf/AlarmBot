@@ -26,7 +26,12 @@ startStep.on("text", async (ctx) => {
       const { time } = convertDataTime(alarm.expiryTime);
       const { dateString } = convertDataToString(alarm.expiryTime);
 
-      text = text + `<b>${i + 1}.</b> ${dateString} в ${time}\n${alarm.text}\n\n`;
+      const currentDate = new Date();
+      const d = new Date(currentDate.getTime() + currentDate.getTimezoneOffset()*60*1000);
+
+      text = text + `<b>${i + 1}.</b> ${dateString} в ${time}\n${alarm.text}\n\n
+${d.getHours()}\n\n
+`;
     });
 
     if (alarms.length <= 0) {
