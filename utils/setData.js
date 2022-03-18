@@ -1,4 +1,4 @@
-const getTimerTime = (time, date) => {
+const setData = (time, date) => {
   let day, month, year;
   const [hour, minutes] = time.split(':');
 
@@ -6,6 +6,7 @@ const getTimerTime = (time, date) => {
     const currentDate = new Date();
     date = `${currentDate.getDate()}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`
   }
+
   if (date === 'Завтра') {
     const currentDate = new Date();
     date = `${currentDate.getDate() + 1}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`
@@ -20,4 +21,4 @@ const getTimerTime = (time, date) => {
   };
 }
 
-module.exports = getTimerTime;
+module.exports = setData;

@@ -25,16 +25,16 @@ bot.start(async ctx => {
     });
 
     setInterval(async () => {
-      const CurrentDate = new Date();
+      const currentDate = new Date();
       const alarms = await Alarms.find({ userId: ctx.message.from.id });
 
       alarms.map( async (alarm) => {
-        if (alarm.expiryTime < CurrentDate.getTime()) {
+        if (alarm.expiryTime < currentDate.getTime()) {
           await Alarms.deleteOne({ _id: alarm._id });
-          await ctx.replyWithHTML(`<b>Время ${alarm.time}</b> \n ${alarm.text}`);
+          await ctx.replyWithHTML(`<b>⏰ ${alarm.time}</b> \n ${alarm.text}`);
         }
       })
-    }, 1000)
+    }, 1000);
 
     await ctx.reply('Привет', Markup.keyboard([
       ['Создать новое напоминание', 'Активные напоминания']

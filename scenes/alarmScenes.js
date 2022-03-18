@@ -2,7 +2,7 @@ const { Scenes, Markup, Composer } = require('telegraf');
 const mongoose = require("mongoose");
 require('dotenv').config();
 
-const getTimer = require('../utils/timer');
+const setData = require('../utils/setData');
 const Alarms = require('../models/Alarms');
 
 const startStep = new Composer();
@@ -51,23 +51,23 @@ doneStep.on("text", async (ctx) => {
   try {
     ctx.wizard.state.data.alarmDate = ctx.message.text;
     const {alarmTime, alarmDate, alarmText, userId} = ctx.wizard.state.data;
-    const timer = getTimer(alarmTime, alarmDate);
+    const { timer, expiryTime} = setData(alarmTime, alarmDate);
 
-    if (timer.timer < 0) {
+    if (timer < 0) {
       await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nУказано время меньше текущего.`, Markup.keyboard([
         ['Создать новое напоминание', 'Активные напоминания']
       ]).oneTime().resize());
       return ctx.scene.leave();
     }
 
-    if (isNaN(timer.timer)) {
-      await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nВместо времени или даты написана чушь.`, Markup.keyboard([
+    if (isNaN(timer)) {
+      await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nНе удалось распознать время или дату.`, Markup.keyboard([
         ['Создать новое напоминание', 'Активные напоминания']
       ]).oneTime().resize());
       return ctx.scene.leave();
     }
 
-    const alarm = new Alarms({ userId, time: alarmTime, date: alarmDate, text: alarmText, expiryTime: timer.expiryTime });
+    const alarm = new Alarms({ userId, time: alarmTime, date: alarmDate, text: alarmText, expiryTime });
     await alarm.save();
 
     await ctx.replyWithHTML(`<b>Напоминание создано</b>\n${alarmDate} в ${alarmTime}\n${alarmText}`, Markup.keyboard([

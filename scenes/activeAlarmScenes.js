@@ -3,6 +3,9 @@ const mongoose = require("mongoose");
 require('dotenv').config();
 
 const Alarms = require('../models/Alarms');
+const convertDataTime = require('../utils/convertDataTime');
+const convertDataToString = require('../utils/convertDataToString');
+
 let alarms = [];
 
 const startStep = new Composer();
@@ -20,7 +23,10 @@ startStep.on("text", async (ctx) => {
 
     let text = `<b>Активные напоминания</b>\n\n`;
     alarms.map((alarm, i) => {
-      text = text + `<b>${i + 1}.</b> ${alarm.date} в ${alarm.time}\n${alarm.text}\n\n`
+      const { time } = convertDataTime(alarm.expiryTime);
+      const { dateString } = convertDataToString(alarm.expiryTime);
+
+      text = text + `<b>${i + 1}.</b> ${dateString} в ${time}\n${alarm.text}\n\n`;
     });
 
     if (alarms.length <= 0) {
