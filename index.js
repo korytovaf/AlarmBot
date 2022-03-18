@@ -29,10 +29,10 @@ bot.start(async ctx => {
       const alarms = await Alarms.find({ userId: ctx.message.from.id });
 
       alarms.map( async (alarm) => {
-        console.log(currentDate.getTimezoneOffset)
-        console.log('11111', new Date(+alarm.expiryTime))
-        console.log('22222', new Date(currentDate.getTime() + 180*60*1000))
-        if (+alarm.expiryTime < currentDate.getTime() + 180*60*1000) {
+        console.log(currentDate.getTimezoneOffset())
+        console.log('11111', new Date(alarm.expiryTime + currentDate.getTimezoneOffset()*60*1000))
+        console.log('22222', new Date(+currentDate.getTime()))
+        if (+alarm.expiryTime + currentDate.getTimezoneOffset()*60*1000 < +currentDate.getTime()) {
           await Alarms.deleteOne({ _id: alarm._id });
           await ctx.replyWithHTML(`<b>⏰ ${alarm.time}</b> \n ${alarm.text}`);
         }
