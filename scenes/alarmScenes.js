@@ -51,7 +51,10 @@ doneStep.on("text", async (ctx) => {
   try {
     ctx.wizard.state.data.alarmDate = ctx.message.text;
     const {alarmTime, alarmDate, alarmText, userId} = ctx.wizard.state.data;
-    const { expiryTime, utc } = setData(alarmTime, alarmDate);
+    console.log(new Date(ctx.message.date * 1000).getTimezoneOffset());
+    const { expiryTime } = setData(alarmTime, alarmDate);
+
+    const utcNew = new Date(ctx.message.date * 1000).getTimezoneOffset()
 
     // if (timer < 0) {
     //   await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nУказано время меньше текущего.`, Markup.keyboard([
@@ -67,7 +70,7 @@ doneStep.on("text", async (ctx) => {
     //   return ctx.scene.leave();
     // }
 
-    const alarm = new Alarms({ userId, time: alarmTime, date: alarmDate, text: alarmText, expiryTime, utc });
+    const alarm = new Alarms({ userId, time: alarmTime, date: alarmDate, text: alarmText, expiryTime, utc: utcNew });
     await alarm.save();
 
     await ctx.replyWithHTML(`<b>Напоминание создано</b>\n${alarmDate} в ${alarmTime}\n${alarmText}`, Markup.keyboard([
