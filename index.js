@@ -26,15 +26,18 @@ bot.start(async ctx => {
     });
 
     setInterval(async () => {
-      const currentDate = new Date();
       const alarms = await Alarms.find({ userId: ctx.message.from.id });
 
       alarms.map( async (alarm) => {
-        console.log(alarm.utc);
-        console.log('11111', new Date(alarm.expiryTime.getTime() + alarm.utc*60*1000))
-        console.log('22222', new Date(+currentDate.getTime()));
         const { time } = convertDataTime(alarm.expiryTime);
-        if (+alarm.expiryTime.getTime() + alarm.utc*60*1000 < +currentDate.getTime()) {
+        const currentDate = new Date();
+        const utcHours = Math.round((currentDate - alarm.expiryTime)/1000/3600);
+
+        console.log('utcHours', utcHours)
+        console.log('текущее часы     ', new Date(currentDate - utcHours * 3600 * 1000))
+        console.log('полученное время ', alarm.expiryTime);
+
+        if (alarm.expiryTime <= new Date(currentDate - utcHours * 3600 * 1000)) {
           await Alarms.deleteOne({ _id: alarm._id });
           await ctx.replyWithHTML(`<b>⏰ ${time}</b> \n ${alarm.text}`);
         }
