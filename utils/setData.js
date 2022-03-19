@@ -12,13 +12,12 @@ const setData = (time, date) => {
     date = `${currentDate.getDate() + 1}.${currentDate.getMonth() + 1}.${currentDate.getFullYear()}`
   }
   [day, month, year] = date.split('.');
-  const receivedDate = new Date(+year, +month - 1, +day, +hour, +minutes);
-  let currentDate = new Date();
-  const utc = receivedDate.getTimezoneOffset();
+  const today = new Date();
+  const utc = today.getTimezoneOffset();
+  const expiryTime = new Date(+year, +month - 1, +day, +hour, +minutes - utc);
 
   return {
-    timer: receivedDate.getTime() - currentDate.getTime(),
-    expiryTime: receivedDate.getTime(),
+    expiryTime,
     utc
   };
 }

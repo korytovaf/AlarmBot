@@ -44,28 +44,28 @@ dataStep.on("text", async (ctx) => {
   } catch (e) {
     console.log(e)
   }
-})
+});
 
 const doneStep = new Composer();
 doneStep.on("text", async (ctx) => {
   try {
     ctx.wizard.state.data.alarmDate = ctx.message.text;
     const {alarmTime, alarmDate, alarmText, userId} = ctx.wizard.state.data;
-    const { timer, expiryTime, utc} = setData(alarmTime, alarmDate);
+    const { expiryTime, utc } = setData(alarmTime, alarmDate);
 
-    if (timer < 0) {
-      await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nУказано время меньше текущего.`, Markup.keyboard([
-        ['Создать новое напоминание', 'Активные напоминания']
-      ]).oneTime().resize());
-      return ctx.scene.leave();
-    }
+    // if (timer < 0) {
+    //   await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nУказано время меньше текущего.`, Markup.keyboard([
+    //     ['Создать новое напоминание', 'Активные напоминания']
+    //   ]).oneTime().resize());
+    //   return ctx.scene.leave();
+    // }
 
-    if (isNaN(timer)) {
-      await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nНе удалось распознать время или дату.`, Markup.keyboard([
-        ['Создать новое напоминание', 'Активные напоминания']
-      ]).oneTime().resize());
-      return ctx.scene.leave();
-    }
+    // if (isNaN(timer)) {
+    //   await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nНе удалось распознать время или дату.`, Markup.keyboard([
+    //     ['Создать новое напоминание', 'Активные напоминания']
+    //   ]).oneTime().resize());
+    //   return ctx.scene.leave();
+    // }
 
     const alarm = new Alarms({ userId, time: alarmTime, date: alarmDate, text: alarmText, expiryTime, utc });
     await alarm.save();

@@ -6,6 +6,7 @@ const alarmScenes = require('./scenes/alarmScenes.js');
 const activeAlarmScenes = require('./scenes/activeAlarmScenes.js');
 const Alarms = require("./models/Alarms");
 const { info } = require('./utils/const')
+const convertDataTime = require("./utils/convertDataTime");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
@@ -29,12 +30,13 @@ bot.start(async ctx => {
       const alarms = await Alarms.find({ userId: ctx.message.from.id });
 
       alarms.map( async (alarm) => {
-        console.log(alarm.utc)
-        console.log('11111', new Date(alarm.expiryTime - alarm.utc*60*1000))
-        console.log('22222', new Date(+currentDate.getTime()))
-        if (+alarm.expiryTime - alarm.utc*60*1000 < +currentDate.getTime()) {
+        console.log(alarm.utc);
+        console.log('11111', new Date(alarm.expiryTime.getTime() + alarm.utc*60*1000))
+        console.log('22222', new Date(+currentDate.getTime()));
+        const { time } = convertDataTime(alarm.expiryTime);
+        if (+alarm.expiryTime.getTime() + alarm.utc*60*1000 < +currentDate.getTime()) {
           await Alarms.deleteOne({ _id: alarm._id });
-          await ctx.replyWithHTML(`<b>⏰ ${alarm.time}</b> \n ${alarm.text}`);
+          await ctx.replyWithHTML(`<b>⏰ ${time}</b> \n ${alarm.text}`);
         }
       })
     }, 1000);
