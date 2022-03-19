@@ -14,10 +14,12 @@ const setData = (time, date) => {
   [day, month, year] = date.split('.');
   const receivedDate = new Date(+year, +month - 1, +day, +hour, +minutes);
   let currentDate = new Date();
+  const utc = receivedDate.getTimezoneOffset();
 
   return {
     timer: receivedDate.getTime() - currentDate.getTime(),
-    expiryTime: receivedDate.getTime()
+    expiryTime: receivedDate.getTime(),
+    utc
   };
 }
 
