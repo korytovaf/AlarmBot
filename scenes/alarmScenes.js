@@ -4,7 +4,6 @@ require('dotenv').config();
 
 const setData = require('../utils/setData');
 const Alarms = require('../models/Alarms');
-const Users = require("../models/Users");
 
 const startStep = new Composer();
 startStep.on("text", async (ctx) => {
@@ -13,7 +12,6 @@ startStep.on("text", async (ctx) => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-
     ctx.wizard.state.data = {};
     ctx.wizard.state.data.userId = ctx.message.from.id;
     await ctx.replyWithHTML('Напиши текст напоминания');
@@ -52,9 +50,7 @@ doneStep.on("text", async (ctx) => {
   try {
     ctx.wizard.state.data.alarmDate = ctx.message.text;
     const { alarmTime, alarmDate, alarmText, userId } = ctx.wizard.state.data;
-    // const { utc } = await Users.findOne({ userId: ctx.wizard.state.data.userId });
     const expiryTime = setData(alarmTime, alarmDate);
-
     const utcExpiryTime = new Date(+expiryTime);
 
     // if (timer < 0) {
@@ -63,7 +59,7 @@ doneStep.on("text", async (ctx) => {
     //   ]).oneTime().resize());
     //   return ctx.scene.leave();
     // }
-
+    //
     // if (isNaN(timer)) {
     //   await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nНе удалось распознать время или дату.`, Markup.keyboard([
     //     ['Создать новое напоминание', 'Активные напоминания']
@@ -76,14 +72,14 @@ doneStep.on("text", async (ctx) => {
 
     await ctx.replyWithHTML(
       `<b>Напоминание создано</b>\n${alarmDate} в ${alarmTime}\n${alarmText}`, Markup.keyboard([
-      ['Создать новое напоминание', 'Активные напоминания']
+      ['Новое напоминание', 'Активные напоминания']
     ]).oneTime().resize());
 
     return ctx.scene.leave();
   } catch (e) {
     console.log(e);
     await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nЧто-то пошло не так.`, Markup.keyboard([
-      ['Создать новое напоминание', 'Активные напоминания']
+      ['Новое напоминание', 'Активные напоминания']
     ]).oneTime().resize());
     return ctx.scene.leave();
   }

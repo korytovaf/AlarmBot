@@ -25,18 +25,18 @@ startStep.on("text", async (ctx) => {
     alarms.map((alarm, i) => {
       const { time } = convertDataTime(alarm.utcExpiryTime);
       const { dateString } = convertDataToString(alarm.utcExpiryTime);
-
       text = text + `<b>${i + 1}.</b> ${dateString} в ${time}\n${alarm.alarmText}\n\n`;
     });
 
     if (alarms.length <= 0) {
-      await ctx.replyWithHTML('Нет активных напоминаний');
+      await ctx.replyWithHTML('Нет активных напоминаний', Markup.keyboard([
+        ['Новое напоминание', 'Активные напоминания']
+      ]).oneTime().resize());
       return ctx.scene.leave();
     }
     await ctx.replyWithHTML(text, Markup.keyboard([
-      ['Создать новое напоминание', 'Активные напоминания']
+      ['Новое напоминание', 'Активные напоминания']
     ]).oneTime().resize());
-
     return ctx.scene.leave();
   } catch (e) {
     console.log(e);

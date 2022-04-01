@@ -1,6 +1,6 @@
 const { Scenes, Markup, Composer} = require('telegraf');
 const mongoose = require("mongoose");
-const { timeZone } = require("../utils/timeZone");
+const { timeZone } = require("../constants/timeZone");
 const Users = require("../models/Users");
 require('dotenv').config();
 
@@ -43,17 +43,21 @@ const callbackTimeZone = async (ctx, zone) => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    ctx.wizard.state.data.timeZone = ctx.update.callback_query.data;
+
     let user = await Users.findOne({ userId: ctx.wizard.state.data.userId });
 
     if (user) {
-      await Users.updateOne({ userId: ctx.wizard.state.data.userId }, { $set: { utc: ctx.update.callback_query.data }})
+      await Users.updateOne({ userId: ctx.wizard.state.data.userId }, { $set: { utc: ctx.update.callback_query.data, utcString: zone }})
     } else {
-      user = new Users({ userId: ctx.wizard.state.data.userId, utc: ctx.update.callback_query.data });
+      user = new Users({ userId: ctx.wizard.state.data.userId, utc: ctx.update.callback_query.data, utcString: zone });
       await user.save();
     }
 
     await ctx.replyWithHTML(`Установлен часовой пояс ${zone}`);
+    await ctx.replyWithHTML(`Теперь можешь создать напоминание`, Markup.keyboard([
+      ['Новое напоминание', 'Активные напоминания']
+    ]).oneTime().resize());
+
     return ctx.scene.leave();
   } catch (e) {
     console.log(e)
