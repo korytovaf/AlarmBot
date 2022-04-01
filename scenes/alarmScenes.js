@@ -52,10 +52,10 @@ doneStep.on("text", async (ctx) => {
   try {
     ctx.wizard.state.data.alarmDate = ctx.message.text;
     const { alarmTime, alarmDate, alarmText, userId } = ctx.wizard.state.data;
-    const { utc } = await Users.findOne({ userId: ctx.wizard.state.data.userId });
+    // const { utc } = await Users.findOne({ userId: ctx.wizard.state.data.userId });
     const expiryTime = setData(alarmTime, alarmDate);
 
-    const utcExpiryTime = new Date(+expiryTime + utc*3600*1000);
+    const utcExpiryTime = new Date(+expiryTime);
 
     // if (timer < 0) {
     //   await ctx.replyWithHTML(`<b>Напоминание не создано!</b>\nУказано время меньше текущего.`, Markup.keyboard([
