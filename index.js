@@ -13,10 +13,12 @@ const stage = new Scenes.Stage([alarmScenes, activeAlarmScenes, timeZoneScenes, 
 bot.use(session());
 bot.use(stage.middleware());
 
+bot.start(async ctx => ctx.scene.enter('startWizard'));
+bot.help(ctx => ctx.scene.enter('helpWizard'));
+
 bot.hears('Новое напоминание', ctx => ctx.scene.enter('alarmWizard'));
 bot.hears('Активные напоминания', ctx => ctx.scene.enter('activeAlarmWizard'));
 bot.hears('/time_zone', ctx => ctx.scene.enter('timeZoneWizard'));
-bot.help(ctx => ctx.scene.enter('helpWizard'));
-bot.start(async ctx => ctx.scene.enter('startWizard'));
+
 
 bot.launch();

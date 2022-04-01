@@ -15,7 +15,8 @@ startStep.on("text", async (ctx) => {
 
     const user = await Users.findOne({ userId: ctx.message.from.id });
     if (!user) {
-      await ctx.reply('Привет, для начала нужно настроить часовой пояс. Отправь команду /time_zone', ctx => ctx.scene.enter('timeZoneWizard'));
+      await ctx.scene.enter('timeZoneWizard');
+      // await ctx.reply('Привет, для начала нужно настроить часовой пояс. Отправь команду /time_zone', ctx => ctx.scene.enter('timeZoneWizard'));
       return;
     }
 
