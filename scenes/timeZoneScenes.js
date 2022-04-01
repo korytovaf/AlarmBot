@@ -54,9 +54,10 @@ const callbackTimeZone = async (ctx, zone) => {
     }
 
     await ctx.replyWithHTML(`Установлен часовой пояс ${zone}`);
-    await ctx.replyWithHTML(`Теперь можешь создать напоминание`, Markup.keyboard([
-      ['Новое напоминание', 'Активные напоминания']
-    ]).oneTime().resize());
+    await ctx.scene.enter('startWizard')
+    // await ctx.replyWithHTML(`Теперь можешь создать напоминание`, Markup.keyboard([
+    //   ['Новое напоминание', 'Активные напоминания']
+    // ]).oneTime().resize());
 
     return ctx.scene.leave();
   } catch (e) {
