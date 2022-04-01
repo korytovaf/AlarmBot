@@ -4,19 +4,24 @@ require('dotenv').config();
 
 const alarmScenes = require('./scenes/alarmScenes.js');
 const activeAlarmScenes = require('./scenes/activeAlarmScenes.js');
+const timeZoneScenes = require('./scenes/timeZoneScenes.js');
+
 const Alarms = require("./models/Alarms");
+const Users = require("./models/Users");
+
 const { info } = require('./utils/const')
 const convertDataTime = require("./utils/convertDataTime");
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
 
-const stage = new Scenes.Stage([alarmScenes, activeAlarmScenes]);
+const stage = new Scenes.Stage([alarmScenes, activeAlarmScenes, timeZoneScenes]);
 
 bot.use(session());
 bot.use(stage.middleware());
 
-bot.hears('Создать новое напоминание', ctx => ctx.scene.enter('alarmWizard'))
-bot.hears('Активные напоминания', ctx => ctx.scene.enter('activeAlarmWizard'))
+bot.hears('Создать новое напоминание', ctx => ctx.scene.enter('alarmWizard'));
+bot.hears('Активные напоминания', ctx => ctx.scene.enter('activeAlarmWizard'));
+bot.hears('/time_zone', ctx => ctx.scene.enter('timeZoneWizard'))
 
 bot.start(async ctx => {
   try {
@@ -27,19 +32,18 @@ bot.start(async ctx => {
 
     setInterval(async () => {
       const alarms = await Alarms.find({ userId: ctx.message.from.id });
+      const { utc } = await Users.findOne({ userId: ctx.message.from.id });
 
-      alarms.map( async (alarm) => {
-        const { time } = convertDataTime(alarm.expiryTime);
+      alarms.map( async ({ _id, utcExpiryTime, alarmText }) => {
+        const { time } = convertDataTime(utcExpiryTime);
         const currentDate = new Date();
-        const utcHours = Math.round((currentDate - alarm.expiryTime)/1000/3600);
 
-        console.log('utcHours', utcHours)
-        console.log('текущее часы     ', new Date(currentDate - utcHours * 3600 * 1000))
-        console.log('полученное время ', alarm.expiryTime);
+        console.log('текущее время       ', new Date(+currentDate + utc*3600*1000));
+        console.log('установленное время ', utcExpiryTime);
 
-        if (alarm.expiryTime <= new Date(currentDate - utcHours * 3600 * 1000)) {
-          await Alarms.deleteOne({ _id: alarm._id });
-          await ctx.replyWithHTML(`<b>⏰ ${time}</b> \n ${alarm.text}`);
+        if (utcExpiryTime <= new Date(+currentDate + utc*3600*1000)) {
+          await Alarms.deleteOne({ _id });
+          await ctx.replyWithHTML(`<b>⏰ ${time}</b> \n ${alarmText}`);
         }
       })
     }, 1000);

@@ -19,14 +19,14 @@ startStep.on("text", async (ctx) => {
     ctx.wizard.state.alarmsActive = [];
 
     alarms = await Alarms.find({userId: ctx.message.from.id});
-    alarms.sort((a,b) => a.expiryTime - b.expiryTime);
+    alarms.sort((a,b) => a.utcExpiryTime - b.utcExpiryTime);
 
     let text = `<b>Активные напоминания</b>\n\n`;
     alarms.map((alarm, i) => {
-      const { time } = convertDataTime(alarm.expiryTime);
-      const { dateString } = convertDataToString(alarm.expiryTime);
+      const { time } = convertDataTime(alarm.utcExpiryTime);
+      const { dateString } = convertDataToString(alarm.utcExpiryTime);
 
-      text = text + `<b>${i + 1}.</b> ${dateString} в ${time}\n${alarm.text}\n\n`;
+      text = text + `<b>${i + 1}.</b> ${dateString} в ${time}\n${alarm.alarmText}\n\n`;
     });
 
     if (alarms.length <= 0) {
