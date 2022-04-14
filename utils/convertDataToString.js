@@ -9,7 +9,7 @@ const convertDataToString = (expiryTime) => {
   const month = `${expiryTime.getMonth() + 1 <= 9 ? "0" : ""}${expiryTime.getMonth() + 1}`;
   const year = expiryTime.getFullYear();
 
-  let dateString = dateExpiry.data;
+  let dateString = dateExpiry.date;
 
   const expiryToday = `${day}.${month}.${year}`;
   const expiryTomorrow = `${tomorrow}.${month}.${year}`;
